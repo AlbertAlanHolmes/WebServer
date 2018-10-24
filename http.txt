@@ -1,0 +1,120 @@
+###
+浏览器与服务器之间底层的连接协议是TCP协议。
+而上层负责具体数据传输的应用协议为HTTP协议。
+
+HTTP协议有两个版本：1.0、1.1
+现在基本维持1.1协议。
+
+客户端与服务器之间使用HTTP协议是规定：
+一次请求一次响应，服务器永远不会主动发起请求。
+总是客户端发起请求，服务端处理后进行响应。
+1.0版本时：一次TCP连接后，一次请求一次响应完毕即断开连接。
+1.1版本时：一次TCP连接后，可以进行多次请求与响应后断开连接。
+1.1版本的这个改动可以降低资源开销，提高响应效率。
+
+HTTP协议规定了客户端发送给服务端的[请求]格式以及
+服务端发送回给客户端的[响应]格式。
+请求（request）：
+请求分为三部分组成：
+请求行，消息头，消息正文
+
+请求行：
+请求行由三部分组成，格式为：
+method		uri			protocolCRLF
+请求方法   资源路径       协议版本CRLF
+CR：回车，对应的ASCII编码为13
+LF：换行，对应的ASCII编码为10
+CRLF标志着请求行结束
+
+消息头：
+消息头的格式为：
+name：valueCRLF
+名字：值CRLF
+消息头由若干个name：value组成，每一个都以CRLF结尾。
+消息头是客户端发送的请求中的附带信息。
+具体的名字和对应的值
+在HTTP协议中有规定，都含有具体的意义。
+当所有的消息头都发送完毕后，
+会再发送一个单独的CRLF，
+表示所有消息头发送完毕 ：
+name1:value1CRLF
+name2:value2CRLF
+......
+name9:value9CRLFCRLF
+可以看出，最后一个消息头发送完毕后，会有两个CRLF，
+而第二个CRLF 表示所有的消息头都发送完毕。
+
+消息正文：
+消息正文是二进制数据，消息正文不是以CRLF结尾，
+具体的字节量是通过一个头信息标注的，
+头信息的名字是：Content—Length
+例如：Content-Length：325
+
+通过解析这个头可以得知，消息正文有325个字节，
+这些字节具体表示什么类型的数据
+由另一个头信息标注：Content-Type
+
+如果请求中的头信息里不含有Content-Length，
+说明这个请求中不包含消息正文内容。
+
+
+一个标注HTTP请求的格式：
+GET /index.html HTTP/1.1CRLF  请求行		//GET请求不含有正文
+Content-Type:text/htmlCRLF   消息头
+Content-Length:23CRLF
+......
+xxx:xxxxCRLFCRLF
+1011010010101010011001       消息正文
+
+GET / HTTP/1.1CRLF
+Host: localhost:8080CRLF
+Connection: keep-aliveCRLF
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8CRLF
+Upgrade-Insecure-Requests: 1CRLF
+User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36CRLF
+Accept-Encoding: gzip, deflate, sdchCRLF
+Accept-Language: zh-CN,zh;q=0.8CRLFCRLF
+
+响应(response)：
+响应分为三部分：状态行，响应头，响应正文
+状态行：
+protocol			status-code			reason-phraseCRLF
+协议版本          状态代码                     状态描述
+
+浏览器在读取响应中的状态行时，根据状态代码
+来判断服务器是否正常响应客户端。
+常见的状态代码：
+200：正常响应
+404：未找到客户端要请求的资源
+500：服务端处理发生位置错误
+
+状态代码在HTTP的分类：
+1xx：保留部分
+2xx：处理成功
+3xx：重定向
+4xx：请求不能正确执行，通常是客户端的请求有误
+5xx：服务端错误
+
+响应头：
+响应头的格式和意义与请求中的消息头一样，
+是服务端在进行响应时回馈给客户端的附带信息。
+name1：value1CRLF
+......
+name9：value9CRLFCRLF
+最后一个头发送完毕后，
+会单独发送一个CRLF，
+表示所有的响应头全部发送完毕。
+
+响应正文：
+二进制数据，是服务器实际响应给客户端请求的资源对应内容，
+具体数据多少字节，以及这些字节对应的是什么类型的数据
+是响应头中的：Content-Length，Content-Type	决定
+
+一个标准响应的内容：
+HTTP/1.1 200 OKCRLF		状态行	
+Content-Length:235		响应头
+Content-Type:text/html
+name1：value1CRLF
+......
+name9：value9CRLFCRLF
+10101010010101001111010...	响应正文

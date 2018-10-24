@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web>
+	<!-- Content-Type mapping -->
+	<type-mappings>
+		<type-mappint ext="html" type="text/html" />
+		<type-mappint ext="xml" type="text/xml" />
+		<type-mappint ext="png" type="image/png" />
+		<type-mappint ext="jpeg" type="image/jpeg" />
+		<type-mappint ext="gif" type="image/gif" />
+		 <type-mappint ext="css" type="text/css" />
+		<type-mappint ext="js" type="text/javascript" />
+		 <type-mappint ext="icon" type="image/icon" />
+	</type-mappings>
+</web>
